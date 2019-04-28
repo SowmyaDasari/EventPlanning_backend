@@ -240,6 +240,7 @@ public class SpeakerSponsorController {
 		UserEvent user = new ObjectMapper().readValue(userevent,UserEvent.class);
 
 		OptionalDetails details = new OptionalDetails();
+		OptionalDetails check = optionaldetail.findById(user.getUserid());
 		
 		
 
@@ -257,7 +258,7 @@ public class SpeakerSponsorController {
 		}
 		
 		
-		if(optionaldetail.findById(user.getUserid())!=null && user.getEventid()==0) {
+		if(check!=null && user.getEventid()==0) {
 			return new ResponseEntity<>(failure,HttpStatus.OK);
 		}
 		else {
@@ -278,6 +279,7 @@ public class SpeakerSponsorController {
 				}
 				
 				details.setResume(modifiedfilename);
+				
 			}
 			
 			if(user.getLinkedin()!="") {
@@ -287,7 +289,12 @@ public class SpeakerSponsorController {
 				details.setEducational_details(user.getEducational_details());
 			}
 			details.setUserid(user.getUserid());
-			details.setRole(user.getRole());
+			if(check!=null) {
+				details.setRole(check.getRole());
+			}
+			else {
+				details.setRole(user.getRole());
+			}
 			optionaldetail.save(details);
 			
 		
